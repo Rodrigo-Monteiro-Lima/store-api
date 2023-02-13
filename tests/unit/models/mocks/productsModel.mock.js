@@ -17,8 +17,14 @@ const newProduct = {
   name: "Luva do infinito"
 };
 
+const updateProduct = {
+  name: "Batarangue",
+  id: 1
+}
+
 
 module.exports = {
   products,
-  newProduct
+  newProduct,
+  updateProduct
 }
