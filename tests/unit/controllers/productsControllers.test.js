@@ -186,4 +186,46 @@ describe('Testing product controller', function () {
       .calledWith({ message: 'Product not found' });
     });
   });
+  describe('Deleting a product', function () {
+    it('Should return status 204', async function () {
+      const res = {};
+      const req = {
+        params: { id: 4 },
+      };
+      res.sendStatus = sinon.stub().returns(res);
+      sinon
+        .stub(productService, 'deleteProduct')
+        .resolves({ type: null, message: '' });
+      await productController.deleteProduct(req, res);
+      expect(res.sendStatus).to.have.been.calledWith(204);
+    });
+    it('When passing an invalid id it should return an error', async function () {
+      const res = {};
+      const req = {
+        params: { id: 'a' },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, 'deleteProduct')
+        .resolves(invalidValue);
+      await productController.deleteProduct(req, res);
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith({ message: '"id" must be a number' });
+    });
+    it('When passing an id that does not exist it should return an error', async function () {
+      const res = {};
+      const req = {
+        params: { id: 90 },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, 'deleteProduct')
+        .resolves(productNotFound);
+      await productController.deleteProduct(req, res);
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
+    });
+  });
 });

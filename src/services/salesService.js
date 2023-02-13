@@ -6,6 +6,7 @@ const createSales = async (sales) => {
   let errors = await Promise.all(sales
     .map(async (sale) => schema.validateNewSale(sale)));
   let error = errors.find(({ type }) => type !== null);
+  console.log(errors, error);
   if (error) return error;
   errors = await Promise.all(sales
     .map(async ({ productId }) => findById(productId)));

@@ -37,4 +37,11 @@ describe('Testing product model', function () {
       expect(result).to.equal(1);
     });
   });
+  describe('Deleting a product', function () {
+    it('Deleting a product by id', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+      const result = await productModel.deleteProduct(4);
+      expect(result).to.equal(1);
+    });
+  });
 });

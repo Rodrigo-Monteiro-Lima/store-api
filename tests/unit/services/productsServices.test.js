@@ -79,4 +79,25 @@ describe('Testing product service', function () {
       expect(result.message).to.equal(updateProduct);
     });
   });
+    describe('Deleting a existent product', function () {
+    it('Deleting a product by id', async function () {
+      sinon.stub(productModel, 'deleteProduct').resolves(1);
+      const result = await productService.deleteProduct(4);
+      expect(result.type).to.equal(null);
+      expect(result.message).to.equal('');
+    });
+  });
+  describe('Deleting a product with invalid values', function () {
+    it('Returns an error if the product does not exist', async function () {
+      sinon.stub(productModel, 'deleteProduct').resolves(0);
+      const result = await productService.deleteProduct(4);
+      expect(result.type).to.equal('PRODUCT_NOT_FOUND');
+      expect(result.message).to.equal('Product not found');
+    });
+    it('Returns an error when passing a invalid id ', async function () {
+      const result = await productService.deleteProduct('a');
+      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.message).to.equal('"id" must be a number');
+    });
+  });
 });

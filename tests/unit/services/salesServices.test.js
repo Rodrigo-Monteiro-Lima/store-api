@@ -30,15 +30,16 @@ describe('Testing sale service', function () {
   });
   describe('Registration of a sale with valid value', function () {
     it('Returns the registered sale', async function () {
-      sinon.stub(productService, 'findById').resolves(product);
+      sinon.stub(productService, 'findById').resolves(product.message);
       sinon.stub(salesModel, 'insertSale').resolves(1);
       sinon.stub(salesModel, 'insertSalesProducts').resolves(1);
       const result = await saleService.createSales(newSale);
+      console.log(result)
       expect(result.type).to.equal(null);
       expect(result.message).to.be.deep.equal(sale);
     });
   });
-    describe('Listing sales', function () {
+  describe('Listing sales', function () {
     it('Returns the entire list of sales', async function () {
       sinon.stub(salesModel, 'findAll').resolves(sales);
       const result = await saleService.findAll();
