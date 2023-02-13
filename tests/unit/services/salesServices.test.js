@@ -66,4 +66,33 @@ describe('Testing sale service', function () {
       expect(result.message).to.deep.equal([sales[0]]);
     });
   });
+   describe('Deleting a existent sale', function () {
+    it('Deleting a sale by id', async function () {
+      sinon.stub(salesModel, 'deleteSaleProducts').resolves(1);
+      sinon.stub(salesModel, 'deleteSale').resolves(1);
+      const result = await saleService.deleteSale(4);
+      expect(result.type).to.equal(null);
+      expect(result.message).to.equal('');
+    });
+  });
+  describe('Deleting a product with invalid values', function () {
+    it('Returns an error if the products does not exist', async function () {
+      sinon.stub(salesModel, 'deleteSaleProducts').resolves(0);
+      const result = await saleService.deleteSale(4);
+      expect(result.type).to.equal('SALE_NOT_FOUND');
+      expect(result.message).to.equal('Sale not found');
+    });
+    it('Returns an error if the sale does not exist', async function () {
+      sinon.stub(salesModel, 'deleteSaleProducts').resolves(1);
+      sinon.stub(salesModel, 'deleteSale').resolves(0);
+      const result = await saleService.deleteSale(4);
+      expect(result.type).to.equal('SALE_NOT_FOUND');
+      expect(result.message).to.equal('Sale not found');
+    });
+    it('Returns an error when passing a invalid id ', async function () {
+      const result = await saleService.deleteSale('a');
+      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.message).to.equal('"id" must be a number');
+    });
+  });
 });

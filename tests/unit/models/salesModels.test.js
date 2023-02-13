@@ -37,4 +37,16 @@ describe('Testing sale model', function () {
       expect(result).to.be.deep.equal(sales[0]);
     });
   });
+  describe('Deleting a sale', function () {
+    it('Deleting a sale by id', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+      const result = await salesModel.deleteSale(4);
+      expect(result).to.equal(1);
+    });
+    it('Deleting products from a sale by id', async function () {
+      sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+      const result = await salesModel.deleteSaleProducts(4);
+      expect(result).to.equal(1);
+    });
+  });
 });
