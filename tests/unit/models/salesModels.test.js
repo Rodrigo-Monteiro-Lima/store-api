@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const { salesModel } = require('../../../src/models');
 
 const connection = require('../../../src/database/connection');
-const { date, newSale } = require('./mocks/salesModel.mock');
+const { date, newSale, sales } = require('./mocks/salesModel.mock');
 
 describe('Testing sale model', function () {
   afterEach(function () {
@@ -21,6 +21,20 @@ describe('Testing sale model', function () {
       sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
       const result = await salesModel.insertSalesProducts(1, newSale);
       expect(result).to.equal(1);
+    });
+  });
+  describe('Getting the products list', function () {
+    it('Listing the products ', async function () {
+      sinon.stub(connection, 'execute').resolves([sales]);
+      const result = await salesModel.findAll();
+      expect(result).to.be.deep.equal(sales);
+    });
+  });
+  describe('Getting a product by id', function () {
+    it('Listing the product', async function () {
+      sinon.stub(connection, 'execute').resolves([sales[0]]);
+      const result = await salesModel.findById(1);
+      expect(result).to.be.deep.equal(sales[0]);
     });
   });
 });

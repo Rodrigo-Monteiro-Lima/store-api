@@ -8,6 +8,7 @@ const {
   invalidQuantity,
   product,
   sale,
+  sales
  } = require('./mocks/saleService.mock');
 
 describe('Testing sale service', function () {
@@ -35,6 +36,33 @@ describe('Testing sale service', function () {
       const result = await saleService.createSales(newSale);
       expect(result.type).to.equal(null);
       expect(result.message).to.be.deep.equal(sale);
+    });
+  });
+    describe('Listing sales', function () {
+    it('Returns the entire list of sales', async function () {
+      sinon.stub(salesModel, 'findAll').resolves(sales);
+      const result = await saleService.findAll();
+      expect(result.type).to.be.equal(null);
+      expect(result.message).to.deep.equal(sales);
+    });
+  });
+  describe('Searching a sale', function () {
+    it('Returns an error if it receives an invalid id', async function () {
+      const result = await saleService.findSaleById('a');
+      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.message).to.equal('"id" must be a number');
+    });
+    it('Returns an error if the sale does not exist', async function () {
+      sinon.stub(salesModel, 'findById').resolves([]);
+      const result = await saleService.findSaleById(1);
+      expect(result.type).to.equal('SALE_NOT_FOUND');
+      expect(result.message).to.equal('Sale not found');
+    });
+    it('Returns the sale with a valid id', async function () {
+      sinon.stub(salesModel, 'findById').resolves([sales[0]]);
+      const result = await saleService.findSaleById(1);
+      expect(result.type).to.equal(null);
+      expect(result.message).to.deep.equal([sales[0]]);
     });
   });
 });
