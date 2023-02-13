@@ -6,7 +6,6 @@ const createSales = async (sales) => {
   let errors = await Promise.all(sales
     .map(async (sale) => schema.validateNewSale(sale)));
   let error = errors.find(({ type }) => type !== null);
-  console.log(errors, error);
   if (error) return error;
   errors = await Promise.all(sales
     .map(async ({ productId }) => findById(productId)));
@@ -45,9 +44,31 @@ const deleteSale = async (id) => {
   return { type: null, message: '' };
 };
 
+const updateSale = async (saleId, sales) => {
+  let error = schema.validateId(saleId);
+  if (error.type) return error;
+  const sale = await salesModel.findById(saleId);
+  if (!sale.length) return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
+  let errors = await Promise.all(sales
+    .map(async (sal) => schema.validateNewSale(sal)));
+  error = errors.find(({ type }) => type !== null);
+  if (error) return error;
+  errors = await Promise.all(sales
+    .map(async ({ productId }) => findById(productId)));
+  error = errors.find(({ type }) => type !== null);
+  if (error) return error;
+  await salesModel.deleteSaleProducts(saleId);
+  await Promise.all(sales.map(
+    async (sal) => salesModel.insertSalesProducts(saleId, sal),
+  ));
+  const updatedSale = { saleId, itemsUpdated: sales };
+  return { type: null, message: updatedSale };
+};
+
 module.exports = {
   createSales,
   findAll,
   findSaleById,
   deleteSale,
+  updateSale,
 };
