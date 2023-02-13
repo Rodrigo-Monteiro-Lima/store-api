@@ -3,7 +3,6 @@ const { mapError } = require('../utils/errorMap');
 
 const getAllProducts = async (_req, res) => {
   const { message } = await productService.findAll();
-  console.log(message);
   return res.status(200).json(message);
 };
 

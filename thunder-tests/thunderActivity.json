@@ -46,12 +46,12 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2023-02-13T18:18:46.372Z",
-    "modified": "2023-02-13T18:18:46.372Z",
+    "modified": "2023-02-13T18:43:10.492Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"name\":\"Produto1\"\n}",
+      "raw": "{\n  \"name\":\"\"\n}",
       "form": []
     },
     "tests": []
