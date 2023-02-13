@@ -7,6 +7,7 @@ const {
   products,
   invalidValue,
   productNotFound,
+  newProduct
  } = require('./mocks/productController.mock');
 
 const { expect } = chai;
@@ -72,6 +73,42 @@ describe('Testing product controller', function () {
       await productController.getProductById(req, res);
       expect(res.status).to.have.been.calledWith(404);
       expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
+    });
+  });
+    describe('Registration of a product with valid value', function () {
+    it('When sending valid data should save correctly', async function () {
+      const res = {};
+      const req = {
+        body: newProduct,
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, 'createProduct')
+        .resolves({ type: null, message: newProduct });
+      await productController.createProduct(req, res);
+      expect(res.status).to.have.been.calledWith(201);
+      expect(res.json).to.have.been.calledWith(newProduct);
+    });
+    it('When sending a name with less than 5 characters it should return an error',
+    async function () {
+      const res = {};
+      const req = {
+        body: {
+          name: 'Ultr',
+        },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, 'createProduct')
+        .resolves(
+          { type: 'INVALID_VALUE', message: '"name" length must be at least 5 characters long' },
+          );
+      await productController.createProduct(req, res);
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been
+      .calledWith({ message: '"name" length must be at least 5 characters long' });
     });
   });
 });

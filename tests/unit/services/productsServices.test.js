@@ -36,4 +36,20 @@ describe('Testing product service', function () {
       expect(result.message).to.deep.equal(products[0]);
     });
   });
+    describe('Registration of a product with invalid value', function () {
+    it('Returns an error when passing an invalid name', async function () {
+      const result = await productService.createProduct('Ultr');
+      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.message).to.equal('"name" length must be at least 5 characters long');
+    });
+  });
+  describe('Registration of a product with valid value', function () {
+    it('Returns the registered product', async function () {
+      sinon.stub(productModel, 'insert').resolves(1);
+      sinon.stub(productModel, 'findById').resolves(products[0]);
+      const result = await productService.createProduct('Martelo de Thor');
+      expect(result.type).to.equal(null);
+      expect(result.message).to.equal(products[0]);
+    });
+  });
 });
