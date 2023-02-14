@@ -228,4 +228,34 @@ describe('Testing product controller', function () {
       expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
     });
   });
+  describe('Searching a product', function () {
+    it('Should return status 200', async function () {
+      const res = {};
+      const req = {
+        query: { q: 'mar' },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, 'searchingProduct')
+        .resolves({ type: null, message: [products[0]] });
+      await productController.searchingProduct(req, res);
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith([products[0]]);
+    });
+    it('When passing not passing a query should return all products e status 200', async function () {
+      const res = {};
+      const req = {
+        query: {},
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, 'searchingProduct')
+        .resolves({ type: null, message: products });
+      await productController.searchingProduct(req, res);
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith(products);
+    });
+  });
 });

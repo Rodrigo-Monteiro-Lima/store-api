@@ -44,4 +44,11 @@ describe('Testing product model', function () {
       expect(result).to.equal(1);
     });
   });
+  describe('Searching a product', function () {
+    it('Seaching a product by name', async function () {
+      sinon.stub(connection, 'execute').resolves([[products[0]]]);
+      const result = await productModel.searchingProduct('%mar%');
+      expect(result).to.be.deep.equal([products[0]]);
+    });
+  });
 });

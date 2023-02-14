@@ -100,4 +100,12 @@ describe('Testing product service', function () {
       expect(result.message).to.equal('"id" must be a number');
     });
   });
+  describe('Searching a product', function () {
+    it('Returns the product', async function () {
+      sinon.stub(productModel, 'searchingProduct').resolves([products[0]]);
+      const result = await productService.searchingProduct('%mar%');
+      expect(result.type).to.equal(null);
+      expect(result.message).to.deep.equal([products[0]]);
+    });
+  });
 });

@@ -45,7 +45,6 @@ const searchingProduct = async (name) => {
     'SELECT * FROM StoreManager.products WHERE name LIKE ?;',
     [name],
   );
-
   return result;
 };
 

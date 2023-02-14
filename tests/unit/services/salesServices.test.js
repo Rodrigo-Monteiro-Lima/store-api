@@ -95,4 +95,14 @@ describe('Testing sale service', function () {
       expect(result.message).to.equal('"id" must be a number');
     });
   });
+
+   describe('Deleting a existent sale', function () {
+    it('Deleting a sale by id', async function () {
+      sinon.stub(salesModel, 'deleteSaleProducts').resolves(1);
+      sinon.stub(salesModel, 'deleteSale').resolves(1);
+      const result = await saleService.deleteSale(4);
+      expect(result.type).to.equal(null);
+      expect(result.message).to.equal('');
+    });
+  });
 });
