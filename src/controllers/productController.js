@@ -34,10 +34,19 @@ const deleteProduct = async (req, res) => {
   return res.sendStatus(204);
 };
 
+const searchingProduct = async (req, res) => {
+  const { q } = req.query;
+  const name = `%${q}%`;
+  // if (q === undefined)
+  const { message } = await searchingProduct(name);
+  return res.status(200).json(message);
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  searchingProduct,
 };
