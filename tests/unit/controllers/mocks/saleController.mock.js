@@ -10,6 +10,11 @@ const sale = {
   itemsSold: newSale
 };
 
+const updatedSale = {
+  saleId: 1,
+  itemsUpdated: newSale
+};
+
 const sales = [
   {
     saleId: 1,
@@ -28,5 +33,6 @@ const sales = [
 module.exports = {
   newSale,
   sale,
-  sales
+  sales,
+  updatedSale
 }

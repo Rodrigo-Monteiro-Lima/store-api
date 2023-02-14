@@ -29,6 +29,11 @@ const sale = {
   itemsSold: newSale
 };
 
+const updateSale = {
+  saleId: 1,
+  itemsUpdated: newSale
+};
+
 const sales = [
   {
     saleId: 1,
@@ -50,5 +55,6 @@ module.exports = {
   invalidQuantity,
   product,
   sale,
-  sales
+  sales,
+  updateSale
 }

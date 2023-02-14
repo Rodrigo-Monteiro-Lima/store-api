@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { saleService } = require('../../../src/services');
 const { saleController } = require('../../../src/controllers');
-const { newSale, sale, sales } = require('./mocks/saleController.mock');
+const { newSale, sale, sales, updatedSale } = require('./mocks/saleController.mock');
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -112,7 +112,7 @@ describe('Testing sale controller', function () {
     });
   });
   describe('Deleting a sale', function () {
-   it('Should return status 204', async function () {
+    it('Should return status 204', async function () {
       const res = {};
       const req = {
         params: { id: 4 },
@@ -149,6 +149,51 @@ describe('Testing sale controller', function () {
         .stub(saleService, 'deleteSale')
         .resolves({ type: 'SALE_NOT_FOUND', message: 'Sale not found' });
       await saleController.deleteSale(req, res);
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
+    });
+  });
+  describe('Searching a sale', function () {
+    it('Should return status 200', async function () {
+      const res = {};
+      const req = {
+        params: { id: 4 },
+        body: newSale,
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(saleService, 'updateSale')
+        .resolves({ type: null, message: updatedSale });
+      await saleController.updateSale(req, res);
+     expect(res.status).to.have.been.calledWith(200);
+     expect(res.json).to.have.been.calledWith(updatedSale);
+    });
+    it('When passing an invalid id it should return an error', async function () {
+      const res = {};
+      const req = {
+        params: { id: 'a' },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(saleService, 'updateSale')
+        .resolves({ type: 'INVALID_VALUE', message: '"id" must be a number' });
+      await saleController.updateSale(req, res);
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith({ message: '"id" must be a number' });
+    });
+    it('When passing an id that does not exist it should return an error', async function () {
+      const res = {};
+      const req = {
+        params: { id: 90 },
+      };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(saleService, 'updateSale')
+        .resolves({ type: 'SALE_NOT_FOUND', message: 'Sale not found' });
+      await saleController.updateSale(req, res);
       expect(res.status).to.have.been.calledWith(404);
       expect(res.json).to.have.been.calledWith({ message: 'Sale not found' });
     });

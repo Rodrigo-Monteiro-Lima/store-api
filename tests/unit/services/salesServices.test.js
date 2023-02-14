@@ -8,7 +8,8 @@ const {
   invalidQuantity,
   product,
   sale,
-  sales
+  sales,
+  updateSale
  } = require('./mocks/saleService.mock');
 
 describe('Testing sale service', function () {
@@ -95,14 +96,51 @@ describe('Testing sale service', function () {
       expect(result.message).to.equal('"id" must be a number');
     });
   });
-
-   describe('Deleting a existent sale', function () {
+  describe('Deleting a existent sale', function () {
     it('Deleting a sale by id', async function () {
       sinon.stub(salesModel, 'deleteSaleProducts').resolves(1);
       sinon.stub(salesModel, 'deleteSale').resolves(1);
       const result = await saleService.deleteSale(4);
       expect(result.type).to.equal(null);
       expect(result.message).to.equal('');
+    });
+  });
+
+  describe('Updating of a sale with invalid value', function () {
+    it('Return a error when passing an invalid type of saleId', async function () {
+      const result = await saleService.updateSale('a', newSale);
+      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.message).to.equal('"id" must be a number');
+    })
+    it('Return a error when passing an nonexistent saleId', async function () {
+      sinon.stub(salesModel, 'findById').resolves([]);
+      const result = await saleService.updateSale(1, newSale);
+      expect(result.type).to.equal('SALE_NOT_FOUND');
+      expect(result.message).to.equal('Sale not found');
+    })
+    it('Returns an error when passing an invalid quantity', async function () {
+      sinon.stub(salesModel, 'findById').resolves([1]);
+      const result = await saleService.updateSale(1, invalidQuantity);
+      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.message).to.equal('"quantity" must be greater than or equal to 1');
+    });
+    it('Returns an error when passing an invalid productId', async function () {
+      sinon.stub(salesModel, 'findById').resolves([1]);
+      sinon.stub(productService, 'findById').resolves(undefined);
+      const result = await saleService.updateSale(1, invalidId);
+      expect(result.type).to.equal('PRODUCT_NOT_FOUND');
+      expect(result.message).to.equal('Product not found');
+    });
+  });
+  describe('Updating a sale with valid value', function () {
+    it('Returns the updated sale', async function () {
+      sinon.stub(salesModel, 'findById').resolves([1]);
+      sinon.stub(productService, 'findById').resolves(product.message);
+      sinon.stub(salesModel, 'deleteSaleProducts').resolves(1);
+      sinon.stub(salesModel, 'insertSalesProducts').resolves(1);
+      const result = await saleService.updateSale(1, newSale);
+      expect(result.type).to.equal(null);
+      expect(result.message).to.be.deep.equal(updateSale);
     });
   });
 });
