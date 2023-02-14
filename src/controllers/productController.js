@@ -36,9 +36,9 @@ const deleteProduct = async (req, res) => {
 
 const searchingProduct = async (req, res) => {
   const { q } = req.query;
-  const name = `%${q}%`;
-  // if (q === undefined)
-  const { message } = await searchingProduct(name);
+  let name = `%${q}%`;
+  if (q === undefined) name = '%%';
+  const { message } = await productService.searchingProduct(name);
   return res.status(200).json(message);
 };
 
